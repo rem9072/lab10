@@ -1,0 +1,47 @@
+---
+title: "Untitled"
+author: "Reed Magleby"
+date: "November 20, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. Write a function that calculates cumulative distribution function of a binomial random variable.
+Compare results from your function with pbinom() function.
+
+```{r}
+binom_func <- function(x, size, p) {
+  binom <- vector(length = x)
+  for (i in (1:x)) {
+    binom[i] <- (p^i) * (1 - p)^(size - i) * (factorial(size) / (factorial(i) * factorial(size - i)))
+  }
+  return(sum(binom))
+}
+
+binom_func(5, 10, 0.5)
+pbinom(5, 10, 0.5)
+```
+
+
+2. Write a function that runs simulations to obtain power from a one-sample t-test. Run your function
+(with number of simulations = 10,000 ) with n = 30, delta = 0.5, sd = 1 and sig.level = 0.05. Compare
+your results with power.t.test(n = 30, delta = 0.5, sd = 1, sig.level = 0.05, type = 'one.sample').
+
+```{r}
+
+power_t <- function(n, delta, sd, alpha) {
+  samples <- replicate(10000, {
+    x <- rnorm(n = n, mean = delta, sd = sd)
+    return(as.numeric(t.test(x)$p.value < alpha))
+  })
+  return(mean(samples))
+}
+
+power_t(n = 30, sd = 1, delta = 0.5, alpha = 0.05)
+power.t.test(n = 30, delta = 0.5, sd = 1, sig.level = 0.05, type = "one.sample")$power
+```
+
+
