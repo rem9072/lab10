@@ -35,7 +35,7 @@ your results with power.t.test(n = 30, delta = 0.5, sd = 1, sig.level = 0.05, ty
 power_t <- function(n, delta, sd, alpha) {
   samples <- replicate(10000, {
     x <- rnorm(n = n, mean = delta, sd = sd)
-    return(as.numeric(t.test(x)$p.value < alpha))
+    return(as.numeric(t.test(x, conf.level = (1-alpha))$p.value < alpha))
   })
   return(mean(samples))
 }
